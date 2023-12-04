@@ -1,7 +1,7 @@
 FROM python:3.8-slim
 
-WORKDIR /server
-COPY src /server
+WORKDIR /http_server
+COPY src /http_server
 
 RUN mkdir -p content
 RUN pip install --upgrade pip

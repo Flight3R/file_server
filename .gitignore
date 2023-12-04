@@ -1,1 +1,6 @@
+src/__pycache__
+src/content
 src/env
+src/http_server.log
+src/app_key
+src/credentials
