@@ -20,14 +20,19 @@ def authenticated_user():
     return session.get('authenticated', False)
 
 
+def serve_index(**kwargs):
+    file_list = os.listdir(CONTENT_DIR)
+    generate_token = get_generated_token(TOKEN_DIR)
+    return render_template('index.html', files=file_list, token=generate_token, **kwargs)
+
+
 @app.route('/')
 def index():
     if not authenticated_user():
         user_ip = "->".join(request.access_route)
         log(logger.info, 'Site visited', f'{user_ip=}')
         return redirect(url_for('login'))
-    file_list = os.listdir(CONTENT_DIR)
-    return render_template('index.html', files=file_list, token=get_generated_token(TOKEN_DIR))
+    return serve_index()
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -68,6 +73,7 @@ def login_with_token():
 def upload_file():
     auth_id = authenticated_user()
     if not auth_id:
+        log(logger.warning, 'Unauthorized try', f'{user_ip=}')
         return redirect(url_for('login'))
 
     if 'file' not in request.files:
@@ -79,10 +85,13 @@ def upload_file():
         return redirect(request.url)
 
     if file:
-        file.save(os.path.join(CONTENT_DIR, file.filename))
-        user_ip ="->".join(request.access_route)
-        filename = file.filename
-        log(logger.info, 'File uploaded', f'{filename=}', f'{auth_id=}', f'{user_ip=}')
+        if not os.path.exists(os.path.join(CONTENT_DIR, file.filename)):
+            file.save(os.path.join(CONTENT_DIR, file.filename))
+            user_ip ="->".join(request.access_route)
+            filename = file.filename
+            log(logger.info, 'File uploaded', f'{filename=}', f'{auth_id=}', f'{user_ip=}')
+        else:
+            return serve_index(error="Filename already in use!")
         return redirect(url_for('index'))
 
 
@@ -90,6 +99,7 @@ def upload_file():
 def download_file(filename):
     auth_id = authenticated_user()
     if not auth_id:
+        log(logger.warning, 'Unauthorized try', f'{user_ip=}')
         return redirect(url_for('login'))
 
     user_ip ="->".join(request.access_route)
@@ -123,8 +133,8 @@ def remove_token(token):
         remove_token_file(TOKEN_DIR, token)
         user_ip ="->".join(request.access_route)
         log(logger.info, 'Token removed', f'{token=}', f'{auth_id=}', f'{user_ip=}')
-    except ValueError:
-        pass
+    except ValueError as error:
+        log(logger.error, 'Error occurred on token removal', f'{token=}', f'{auth_id=}', f'{user_ip=}', f'{error=}')
     return redirect(url_for('index'))
 
 
