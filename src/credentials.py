@@ -21,12 +21,12 @@ def get_username_and_password(file_path):
     return credentials
 
 
-def get_generated_tokens(path):
-    """
-    :raises FileNotFoundError
-    """
-    tokens = [file for file in os.listdir(path)]
-    return tokens
+def get_generated_token(path):
+    tokens = os.listdir(path)
+    try:
+        return tokens[0]
+    except IndexError:
+        return None
 
 
 def save_token_to_file(path, token):
@@ -35,4 +35,7 @@ def save_token_to_file(path, token):
 
 
 def remove_token_file(path, token):
+    """
+    :raises FileNotFoundError
+    """
     os.remove(os.path.join(path, token))

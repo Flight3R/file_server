@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory, session
 from logger import log, logger
-from credentials import get_key, get_username_and_password, get_generated_tokens, save_token_to_file, remove_token_file
+from credentials import get_key, get_username_and_password, get_generated_token, save_token_to_file, remove_token_file
 import random
 import os
 
@@ -11,7 +11,7 @@ credentials = get_username_and_password('credentials')
 USERNAME = credentials['USERNAME']
 PASSWORD = credentials['PASSWORD']
 CONTENT_DIR = 'content'
-TOKEN_DIR = 'tokens'
+TOKEN_DIR = 'token'
 
 log(logger.info, 'Server started')
 
@@ -27,7 +27,7 @@ def index():
         log(logger.info, 'Site visited', f'{user_ip=}')
         return redirect(url_for('login'))
     file_list = os.listdir(CONTENT_DIR)
-    return render_template('index.html', files=file_list, generated_tokens=get_generated_tokens(TOKEN_DIR))
+    return render_template('index.html', files=file_list, token=get_generated_token(TOKEN_DIR))
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -53,7 +53,7 @@ def login_with_token():
     token = request.form.get('token')
     user_ip ="->".join(request.access_route)
 
-    if token and token in get_generated_tokens(TOKEN_DIR):
+    if token and token == get_generated_token(TOKEN_DIR):
         remove_token_file(TOKEN_DIR, token)
         session['authenticated'] = token
         log(logger.info, 'Login with token succeeded', f'{token=}', f'{user_ip=}')

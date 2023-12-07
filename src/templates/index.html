@@ -22,15 +22,16 @@
     </form>
 
     {% if session['authenticated'] == 'admin' %}
-        <h2>Token Access</h2>
-
-        <a href="/token/generate"><input type="submit" value="Generate"></a>
-
-        <ul>
-            {% for token in generated_tokens %}
-                <li>{{ token }} <a href="/token/remove/{{ token }}"><input type="submit" value="Remove"></a></li>
-            {% endfor %}
-        </ul>
+    <h2>Token Access
+    {% if token %}
+    <p style="color: green;">{{ token }}</p>
+    {% endif %}
+    </h2>
+    {% if token %}
+    <a href="/token/remove/{{ token }}"><input type="submit" value="Deactivate"></a>
+    {% else %}
+    <a href="/token/generate"><input type="submit" value="Generate"></a>
+    {% endif %}
     {% endif %}
 
     <p><a href="/logout">Logout</a></p>

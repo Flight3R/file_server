@@ -1,6 +1,6 @@
 src/__pycache__
 src/content
-src/tokens
+src/token
 src/env
 src/http_server.log
 src/app_key
