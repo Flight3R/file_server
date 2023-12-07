@@ -4,6 +4,7 @@ WORKDIR /http_server
 COPY src /http_server
 
 RUN mkdir -p content
+RUN mkdir -p tokens
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
