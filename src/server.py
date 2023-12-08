@@ -26,6 +26,10 @@ def serve_index(**kwargs):
     return render_template('index.html', files=file_list, token=generate_token, **kwargs)
 
 
+def is_directory_empty(directory):
+    return not any(os.listdir(directory))
+
+
 @app.route('/')
 def index():
     if not authenticated_user():
@@ -113,12 +117,15 @@ def generate_token():
     if auth_id != 'admin':
         return redirect(url_for('login'))
 
-    random_number = random.randint(0, 9999)
-    token = f"{random_number:04d}"
-    save_token_to_file(TOKEN_DIR, token)
+    if is_directory_empty(TOKEN_DIR):
+        random_number = random.randint(0, 9999)
+        token = f"{random_number:04d}"
+        save_token_to_file(TOKEN_DIR, token)
 
-    user_ip ="->".join(request.access_route)
-    log(logger.info, 'Token generated', f'{token=}', f'{auth_id=}', f'{user_ip=}')
+        user_ip ="->".join(request.access_route)
+        log(logger.info, 'Token generated', f'{token=}', f'{auth_id=}', f'{user_ip=}')
+    else:
+        log(logger.warning, 'Tried to generate second token', f'{auth_id=}', f'{user_ip=}')
 
     return redirect(url_for('index'))
 
