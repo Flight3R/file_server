@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, send_from_
 from logger import log, logger
 from credentials import get_key, get_username_and_password, get_generated_token, save_token_to_file, remove_token_file
 import random
+import sys
 import os
 
 app = Flask(__name__)
@@ -17,21 +18,25 @@ log(logger.info, 'Server started')
 
 
 def authenticated_user():
+    log(logger.debug, sys._getframe().f_code.co_name)
     return session.get('authenticated', False)
 
 
 def serve_index(**kwargs):
+    log(logger.debug, sys._getframe().f_code.co_name)
     file_list = os.listdir(CONTENT_DIR)
     generate_token = get_generated_token(TOKEN_DIR)
     return render_template('index.html', files=file_list, token=generate_token, **kwargs)
 
 
 def is_directory_empty(directory):
+    log(logger.debug, sys._getframe().f_code.co_name)
     return not any(os.listdir(directory))
 
 
 @app.route('/')
 def index():
+    log(logger.debug, sys._getframe().f_code.co_name)
     if not authenticated_user():
         user_ip = "->".join(request.access_route)
         log(logger.info, 'Site visited', f'{user_ip=}')
@@ -41,6 +46,7 @@ def index():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    log(logger.debug, sys._getframe().f_code.co_name)
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
@@ -59,6 +65,7 @@ def login():
 
 @app.route('/token/login', methods=['POST'])
 def login_with_token():
+    log(logger.debug, sys._getframe().f_code.co_name)
     token = request.form.get('token')
     user_ip ="->".join(request.access_route)
 
@@ -75,6 +82,7 @@ def login_with_token():
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
+    log(logger.debug, sys._getframe().f_code.co_name)
     auth_id = authenticated_user()
     if not auth_id:
         log(logger.warning, 'Unauthorized try', f'{user_ip=}')
@@ -101,6 +109,7 @@ def upload_file():
 
 @app.route('/download/<filename>')
 def download_file(filename):
+    log(logger.debug, sys._getframe().f_code.co_name)
     auth_id = authenticated_user()
     if not auth_id:
         log(logger.warning, 'Unauthorized try', f'{user_ip=}')
@@ -113,6 +122,7 @@ def download_file(filename):
 
 @app.route('/token/generate')
 def generate_token():
+    log(logger.debug, sys._getframe().f_code.co_name)
     auth_id = authenticated_user()
     if auth_id != 'admin':
         return redirect(url_for('login'))
@@ -132,6 +142,7 @@ def generate_token():
 
 @app.route('/token/remove/<token>')
 def remove_token(token):
+    log(logger.debug, sys._getframe().f_code.co_name)
     auth_id = authenticated_user()
     if auth_id != 'admin':
         return redirect(url_for('login'))
@@ -147,6 +158,7 @@ def remove_token(token):
 
 @app.route('/logout')
 def logout():
+    log(logger.debug, sys._getframe().f_code.co_name)
     auth_id = authenticated_user()
     if auth_id:
         user_ip ="->".join(request.access_route)
