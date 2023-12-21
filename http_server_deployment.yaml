@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: http-server-deployment
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: http-server
@@ -13,23 +13,30 @@ spec:
         app: http-server
     spec:
       containers:
-        - name: http-server-container 
-          image: 192.168.0.2:5000/http_server_image 
+        - name: http-server-container
+          image: 192.168.0.2:5000/http_server_image:1.0.2
+          env:
+            - name: APP_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: http-server-secret
+                  key: APP_KEY
+            - name: USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: http-server-secret
+                  key: USERNAME
+            - name: PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: http-server-secret
+                  key: PASSWORD
           ports:
-            - containerPort: 8000 
-
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: http-server-service
-spec:
-  selector:
-    app: http-server
-  ports:
-    - protocol: TCP
-      port: 8000
-      targetPort: 8000
-      nodePort: 30001
-  type: NodePort
-
+            - containerPort: 8000
+          volumeMounts:
+            - mountPath: /http_server/storage
+              name: http-server-pv-storage
+      volumes:
+        - name: http-server-pv-storage
+          persistentVolumeClaim:
+            claimName: http-server-pvc

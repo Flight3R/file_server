@@ -1,18 +1,19 @@
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory, session
-from logger import log, logger
-from credentials import get_key, get_username_and_password, get_generated_token, save_token_to_file, remove_token_file
+import logging
 import random
 import sys
 import os
 
-app = Flask(__name__)
-app.secret_key = get_key('app_key')
+from logger import log, logger
+from credentials import load_secret, get_generated_token, save_token_to_file, remove_token_file
 
-credentials = get_username_and_password('credentials')
-USERNAME = credentials['USERNAME']
-PASSWORD = credentials['PASSWORD']
-CONTENT_DIR = 'content'
-TOKEN_DIR = 'token'
+app = Flask(__name__)
+app.secret_key = load_secret('APP_KEY')
+
+USERNAME = load_secret('USERNAME')
+PASSWORD = load_secret('PASSWORD')
+CONTENT_DIR = 'storage/content'
+TOKEN_DIR = 'storage/token'
 
 log(logger.info, 'Server started')
 
@@ -168,4 +169,5 @@ def logout():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    logger.setLevel(logging.DEBUG)
+    app.run(host='0.0.0.0', port=8000, debug=True)

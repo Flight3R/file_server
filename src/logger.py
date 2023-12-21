@@ -1,16 +1,15 @@
 import logging
 
 logging.basicConfig(
-    level=logging.DEBUG,
+    level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler('http_server.log'),
+        logging.FileHandler('storage/http_server.log'),
         logging.StreamHandler()
     ]
 )
 
 logger = logging.getLogger(__name__)
-
 
 def log(logger_func, message, *args, **kwargs):
     log_message = message

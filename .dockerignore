@@ -1,5 +1,3 @@
 src/__pycache__
 src/env
-src/content
-src/token
-src/http_server.log
+src/storage

@@ -1,7 +1,6 @@
 src/__pycache__
-src/content
-src/token
 src/env
-src/http_server.log
-src/app_key
-src/credentials
+src/storage
+http_server_secrets.yaml
+http_server_secrets_setup.sh
+version

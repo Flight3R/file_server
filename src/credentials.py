@@ -1,24 +1,15 @@
 import os
+from logger import logger, log
 
 
-def get_key(file_path):
-    """
-    :raises FileNotFoundError
-    """
-    with open(file_path, 'r') as api_key_file:
-        api_key = api_key_file.read().strip()
-    return api_key
-
-
-def get_username_and_password(file_path):
-    """
-    :raises FileNotFoundError
-    """
-    with open(file_path, 'r') as credentials_file:
-        credentials = {}
-        for key, line in zip(['USERNAME', 'PASSWORD'], credentials_file):
-            credentials[key] = line.strip()
-    return credentials
+def load_secret(secret_key):
+    log(logger.info, "Loading secret", f"{secret_key=}")
+    secret_value = os.environ.get(secret_key)
+    if secret_value is None:
+        log(logger.critical, "Loading secret failed", f"{secret_key=}")
+        raise ValueError
+    log(logger.debug, "Secret loaded", f"{secret_value=}")
+    return secret_value
 
 
 def get_generated_token(path):
@@ -35,7 +26,4 @@ def save_token_to_file(path, token):
 
 
 def remove_token_file(path, token):
-    """
-    :raises FileNotFoundError
-    """
     os.remove(os.path.join(path, token))
