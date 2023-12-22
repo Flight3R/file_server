@@ -4,7 +4,7 @@ logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler('storage/http_server.log'),
+        logging.FileHandler('storage/file_server.log'),
         logging.StreamHandler()
     ]
 )
