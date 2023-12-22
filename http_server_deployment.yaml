@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: http-server-container
-          image: 192.168.0.2:5000/http_server_image:1.0.2
+          image: 192.168.0.2:5000/http_server_image:1.0.0
           env:
             - name: APP_KEY
               valueFrom:
