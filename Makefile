@@ -15,6 +15,7 @@ commit:
 	git add file_server_deployment.yaml
 	git commit -m "Released version $(shell cat version)"
 	git checkout master
+	echo
 
 run:
 	docker run -d -p 60005:8000 --name file_server_container file_server_image:$(shell cat version)

@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: file-server-container
-          image: 192.168.0.2:5000/file_server_image:1.0.3
+          image: 192.168.0.2:5000/file_server_image:1.0.1
           env:
             - name: APP_KEY
               valueFrom:
@@ -31,8 +31,6 @@ spec:
                 secretKeyRef:
                   name: file-server-secret
                   key: PASSWORD
-          ports:
-            - containerPort: 8000
           volumeMounts:
             - mountPath: /file_server/storage
               name: file-server-pv-storage
