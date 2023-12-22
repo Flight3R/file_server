@@ -1,42 +1,42 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: http-server-deployment
+  name: file-server-deployment
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: http-server
+      app: file-server
   template:
     metadata:
       labels:
-        app: http-server
+        app: file-server
     spec:
       containers:
-        - name: http-server-container
-          image: 192.168.0.2:5000/http_server_image:1.0.0
+        - name: file-server-container
+          image: 192.168.0.2:5000/file_server_image:1.0.3
           env:
             - name: APP_KEY
               valueFrom:
                 secretKeyRef:
-                  name: http-server-secret
+                  name: file-server-secret
                   key: APP_KEY
             - name: USERNAME
               valueFrom:
                 secretKeyRef:
-                  name: http-server-secret
+                  name: file-server-secret
                   key: USERNAME
             - name: PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: http-server-secret
+                  name: file-server-secret
                   key: PASSWORD
           ports:
             - containerPort: 8000
           volumeMounts:
-            - mountPath: /http_server/storage
-              name: http-server-pv-storage
+            - mountPath: /file_server/storage
+              name: file-server-pv-storage
       volumes:
-        - name: http-server-pv-storage
+        - name: file-server-pv-storage
           persistentVolumeClaim:
-            claimName: http-server-pvc
+            claimName: file-server-pvc
