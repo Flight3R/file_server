@@ -14,4 +14,4 @@ run:
 	docker run -d -p 60005:8000 --name file_server_container file_server_image:$(shell cat version)
 
 prod:
-	$(MAKE) build tag push update commit update
+	$(MAKE) build tag push update 

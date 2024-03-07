@@ -9,11 +9,37 @@
 
     <h1>Available Files</h1>
 
-    <ul>
+    <table style="border: 0; text-align: left;">
+        <tbody>
         {% for file in files %}
-            <li><a href="/download/{{ file }}">{{ file }}</a></li>
+            <tr>
+                {% if session['authenticated'] == 'admin' or file in token_files %}
+                <th>
+                    <li></li>
+                </th>
+                {% endif %}
+
+                {% if session['authenticated'] == 'admin' %}
+                <th>
+                    {% if file in token_files %}
+                    <a href="/token/remove/{{ file }}"><input type="submit" value="Deactivate Link" style="width: 105px;"></a>
+                    {% else %}
+                    <a href="/token/generate/{{ file }}"><input type="submit" value="Generate Link" style="width: 105px;"></a>
+                    {% endif %}
+                </th>
+                {% endif %}
+
+                <th>
+                {% if file in token_files %}
+                    <a href="/download/{{ file }}/{{ token_files[file] }}">{{ file }}</a>
+                {% elif session['authenticated'] == 'admin' %}
+                    {{ file }}
+                    {% endif %}
+                </th>
+            </tr>
         {% endfor %}
-    </ul>
+        </tbody>
+    </table>
 
     <h2>Upload File</h2>
     {% if error %}
