@@ -196,8 +196,8 @@ def remove_token_request(token):
 
     auth_id = is_user_authenticated()
     user_ip = "->".join(request.access_route)
-    if auth_id != 'admin':
-        log(logger.warning, 'Tried to remove token', f'{token=}', f'{auth_id=}', f'{user_ip=}')
+    if not auth_id:
+        log(logger.warning, 'Unauthorized token removal try', f'{token=}', f'{user_ip=}')
         return redirect(url_for('login_request'))
 
     if token.isdigit() and len(token) == 4:

@@ -41,7 +41,7 @@
     </form>
     <h2>Login with Token</h2>
     {% if token_error %}
-    <p style="color: red;">{{ token_error }}</p>
+        <p style="color: red;">{{ token_error }}</p>
     {% endif %}
     <form action="/token/login" method="post">
         <table style="border: 0;">
