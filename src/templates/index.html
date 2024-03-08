@@ -6,9 +6,7 @@
     <title>File Server</title>
 </head>
 <body>
-
     <h1>Available Files</h1>
-
     <table style="border: 0; text-align: left;">
         <tbody>
         {% for file in files %}
@@ -22,9 +20,9 @@
                 {% if session['authenticated'] == 'admin' %}
                 <th>
                     {% if file in token_files %}
-                    <a href="/token/remove/{{ file }}"><input type="submit" value="Deactivate Link" style="width: 105px;"></a>
+                    <a href="/token/remove/{{ file }}"><input type="submit" value="Deactivate Link" style="width: 105px; color: red;"></a>
                     {% else %}
-                    <a href="/token/generate/{{ file }}"><input type="submit" value="Generate Link" style="width: 105px;"></a>
+                    <a href="/token/generate/{{ file }}"><input type="submit" value="Activate Link" style="width: 105px;"></a>
                     {% endif %}
                 </th>
                 {% endif %}
@@ -34,13 +32,12 @@
                     <a href="/download/{{ file }}/{{ token_files[file] }}">{{ file }}</a>
                 {% elif session['authenticated'] == 'admin' %}
                     {{ file }}
-                    {% endif %}
+                {% endif %}
                 </th>
             </tr>
         {% endfor %}
         </tbody>
     </table>
-
     <h2>Upload File</h2>
     {% if error %}
     <p style="color: red;">{{ error }}</p>
@@ -49,20 +46,15 @@
         <input type="file" name="file" required>
         <input type="submit" value="Upload">
     </form>
-
     {% if session['authenticated'] == 'admin' %}
-    <h2>Token Access
+    <h2>Token Access</h2>
     {% if token %}
-    <p style="color: green;">{{ token }}</p>
-    {% endif %}
-    </h2>
-    {% if token %}
-    <a href="/token/remove/{{ token }}"><input type="submit" value="Deactivate"></a>
+    <h3>Active Token: <span style="color: green;">{{ token }}</span></h3>
+    <a href="/token/remove/{{ token }}"><input type="submit" value="Deactivate Token"></a>
     {% else %}
-    <a href="/token/generate"><input type="submit" value="Generate"></a>
+    <a href="/token/generate"><input type="submit" value="Activate Token"></a>
     {% endif %}
     {% endif %}
-
     <p><a href="/logout">Logout</a></p>
 </body>
 </html>
