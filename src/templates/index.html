@@ -10,21 +10,21 @@
     <table style="border: 0; text-align: left;">
         <tbody>
             {% for file in files %}
-                {% if session['authenticated'] == 'admin' or file in token_files %}
+                {% if session['authenticated'] == 'admin' or file in tokens_for_files %}
                     <tr>
                         <th>
                             <li></li>
                         </th>
                         <th>
-                            {% if file in token_files %}
-                                <a href="/token/remove/{{ file }}"><input type="submit" value="Deactivate Link" style="width: 105px; color: red;"></a>
+                            {% if file in tokens_for_files %}
+                                <a href="/token/remove/{{ tokens_for_files[file] }}"><input type="submit" value="Deactivate Link" style="width: 105px; color: red;"></a>
                             {% elif session['authenticated'] == 'admin' %}
                                 <a href="/token/generate/{{ file }}"><input type="submit" value="Activate Link" style="width: 105px;"></a>
                             {% endif %}
                         </th>
                         <th>
-                            {% if file in token_files %}
-                                <a href="/download/{{ file }}/{{ token_files[file] }}">{{ file }}</a>
+                            {% if file in tokens_for_files %}
+                                <a href="/download/{{ tokens_for_files[file] }}">{{ file }}</a>
                             {% elif session['authenticated'] == 'admin' %}
                                 {{ file }}
                             {% endif %}

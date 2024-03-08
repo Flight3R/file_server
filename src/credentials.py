@@ -1,4 +1,5 @@
 import os
+import sys
 import random
 from logger import logger, log
 
@@ -12,10 +13,27 @@ def load_secret(secret_key):
     return secret_value
 
 
-def generate_token_file(path):
-    random_number = random.randint(0, 9999)
-    token = f"{random_number:04d}"
-    save_file_token_to_file(path, token)
+def generate_download_token_file(path, filename) -> int:
+    random_number = random.randint(0, 999999)
+    token = f"{random_number:06d}"
+    token_file_path = os.path.join(path, token)
+    save_to_file(token_file_path, filename)
+    return token
+
+
+def get_filename_from_download_token_file(filepath) -> str:
+    with open(filepath, 'r') as file:
+        filename = file.read()
+    return filename
+
+
+def is_download_token_generated_for_file(path, filename):
+    tokens = os.listdir(path)
+    for token in tokens:
+        with open(os.path.join(path, token), 'r') as file:
+            if file.read() == filename:
+                return True
+    return False
 
 
 def get_generated_token(path):
@@ -25,14 +43,14 @@ def get_generated_token(path):
     except IndexError:
         return None
 
-def get_token_files_dict(path):
-    token_files_dict = {}
-    files = os.listdir(path)
-    for filename in files:
-        with open(os.path.join(path, filename), 'r') as file:
-            token = file.read()
-            token_files_dict[filename] = token
-    return token_files_dict
+def get_tokens_for_files_dict(path):
+    tokens_for_files_dict = {}
+    tokens = os.listdir(path)
+    for token in tokens:
+        with open(os.path.join(path, token), 'r') as file:
+            filename = file.read()
+            tokens_for_files_dict[filename] = token
+    return tokens_for_files_dict
 
 
 def save_token_to_file(path, token):
@@ -40,18 +58,17 @@ def save_token_to_file(path, token):
         pass
 
 
-def save_file_token_to_file(path, token):
+def save_to_file(path, value):
     with open(path, 'w') as file:
-        file.write(token)
+        file.write(value)
 
 
-def is_file_token_valid(path, token) -> bool:
-    try:
-        with open(path, 'r') as file:
-            file_content = file.read()
-            if file_content == token:
-                return True
-            else:
-                return False
-    except FileNotFoundError:
-        return False
+def is_directory_empty(directory) -> bool:
+    log(logger.debug, sys._getframe().f_code.co_name)
+    return not any(os.listdir(directory))
+
+
+def is_file_present(directory, filename) -> bool:
+    return os.path.exists(os.path.join(directory, filename))
+
+

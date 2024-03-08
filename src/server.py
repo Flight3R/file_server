@@ -5,7 +5,7 @@ import random
 import sys
 import os
 from logger import log, logger
-from credentials import load_secret, generate_token_file, get_generated_token, get_token_files_dict, save_token_to_file, is_file_token_valid
+from credentials import load_secret, generate_download_token_file, get_filename_from_download_token_file, is_download_token_generated_for_file, get_generated_token, get_tokens_for_files_dict, save_token_to_file, is_directory_empty, is_file_present
 
 
 if __name__ == '__main__':
@@ -37,17 +37,8 @@ def serve_index(**kwargs):
 
     file_list = os.listdir(CONTENT_DIR)
     generate_token = get_generated_token(TOKEN_DIR)
-    token_files_dict = get_token_files_dict(LINKS_DIR)
-    return render_template('index.html', files=file_list, token=generate_token, token_files=token_files_dict, **kwargs)
-
-
-def is_directory_empty(directory) -> bool:
-    log(logger.debug, sys._getframe().f_code.co_name)
-    return not any(os.listdir(directory))
-
-
-def is_file_present(directory, filename) -> bool:
-    return os.path.exists(os.path.join(directory, filename))
+    download_tokens_for_files_dict = get_tokens_for_files_dict(LINKS_DIR)
+    return render_template('index.html', files=file_list, token=generate_token, tokens_for_files=download_tokens_for_files_dict, **kwargs)
 
 
 @app.route('/favicon.ico')
@@ -82,7 +73,7 @@ def login_request():
             return redirect(url_for('index_request'))
         else:
             log(logger.warning, 'Login failed', f'{username=}', f'{password=}', f'{user_ip=}')
-            return render_template('login.html', error='Invalid credentials')
+            return render_template('login.html', error='Invalid credentials!')
 
     return render_template('login.html', error=None)
 
@@ -96,7 +87,7 @@ def login_with_token_request():
 
     if token != get_generated_token(TOKEN_DIR):
         log(logger.warning, 'Login with token failed', f'{token=}', f'{user_ip=}')
-        return render_template('login.html', token_error='Invalid token')
+        return render_template('login.html', token_error='Invalid login token!')
 
     os.remove(os.path.join(TOKEN_DIR, token))
     session['authenticated'] = token
@@ -123,28 +114,28 @@ def upload_file_request():
     if filename == '':
         return redirect(request.url)
 
-    if  is_file_present(CONTENT_DIR, filename):
+
+    if is_file_present(CONTENT_DIR, filename):
         return serve_index(error="Filename already in use!")
 
     file_path = os.path.join(CONTENT_DIR, filename)
     file.save(file_path)
     log(logger.info, 'File uploaded', f'{filename=}', f'{auth_id=}', f'{user_ip=}')
     if auth_id != 'admin':
-        token_file_path = os.path.join(LINKS_DIR, filename)
-        token = generate_token_file(token_file_path)
+        token = generate_download_token_file(LINKS_DIR, filename)
         log(logger.info, 'Token for uploaded file generated', f'{filename=}', f'{token=}', f'{auth_id=}', f'{user_ip=}')
     return redirect(url_for('index_request'))
 
 
-@app.route('/download/<filename>/<token>')
-def download_file_token_request(filename, token):
+@app.route('/download/<token>')
+def download_file_request(token):
     log(logger.debug, sys._getframe().f_code.co_name)
     user_ip = "->".join(request.access_route)
-    file_token_path = os.path.join(LINKS_DIR, filename)
-    if not is_file_token_valid(file_token_path, token):
-        log(logger.warning, 'Unauthorized download try', f'{filename=}', f'{token=}', f'{user_ip=}')
+    download_file_token_path = os.path.join(LINKS_DIR, token)
+    if not is_file_present(LINKS_DIR, token):
+        log(logger.warning, 'Unauthorized download try', f'{token=}', f'{user_ip=}')
         return redirect(url_for('index_request'))
-
+    filename = get_filename_from_download_token_file(download_file_token_path)
     log(logger.info, 'File downloaded', f'{filename=}', f'{token=}', f'{user_ip=}')
     return send_from_directory(CONTENT_DIR, filename)
 
@@ -163,9 +154,9 @@ def generate_token_request():
         random_number = random.randint(0, 9999)
         token = f"{random_number:04d}"
         save_token_to_file(TOKEN_DIR, token)
-        log(logger.info, 'Token generated', f'{token=}', f'{auth_id=}', f'{user_ip=}')
+        log(logger.info, 'Login token generated', f'{token=}', f'{auth_id=}', f'{user_ip=}')
     else:
-        log(logger.error, 'Tried to generate second token', f'{auth_id=}', f'{user_ip=}')
+        log(logger.error, 'Tried to generate second login token', f'{auth_id=}', f'{user_ip=}')
 
     return redirect(url_for('index_request'))
 
@@ -180,12 +171,11 @@ def generate_token_file_request(filename):
     if auth_id != 'admin':
         return redirect(url_for('login_request'))
 
-    if not is_file_present(LINKS_DIR, filename):
-        token_file_path = os.path.join(LINKS_DIR, filename)
-        token = generate_token_file(token_file_path)
-        log(logger.info, 'Token for file generated', f'{filename=}', f'{token=}', f'{auth_id=}', f'{user_ip=}')
+    if not is_download_token_generated_for_file(LINKS_DIR, filename):
+        token = generate_download_token_file(LINKS_DIR, filename)
+        log(logger.info, 'Download token for file generated', f'{filename=}', f'{token=}', f'{auth_id=}', f'{user_ip=}')
     else:
-        log(logger.error, 'Tried to generate second token for file', f'{filename=}', f'{auth_id=}', f'{user_ip=}')
+        log(logger.error, 'Tried to generate second download token for file', f'{filename=}', f'{auth_id=}', f'{user_ip=}')
 
     return redirect(url_for('index_request'))
 
@@ -197,24 +187,24 @@ def remove_token_request(token):
     auth_id = is_user_authenticated()
     user_ip = "->".join(request.access_route)
     if not auth_id:
-        log(logger.warning, 'Unauthorized token removal try', f'{token=}', f'{user_ip=}')
+        log(logger.warning, 'Unauthorized login token removal try', f'{token=}', f'{user_ip=}')
         return redirect(url_for('login_request'))
 
     if token.isdigit() and len(token) == 4:
         token_path = os.path.join(TOKEN_DIR, token)
         try:
             os.remove(token_path)
-            log(logger.info, 'Token removed', f'{token=}', f'{auth_id=}', f'{user_ip=}')
+            log(logger.info, 'Login token removed', f'{token=}', f'{auth_id=}', f'{user_ip=}')
         except FileNotFoundError:
             pass
     else:
-        filename = token
-        token_file_path = os.path.join(LINKS_DIR, filename)
+        token_file_path = os.path.join(LINKS_DIR, token)
         try:
+            filename = get_filename_from_download_token_file(token_file_path)
             os.remove(token_file_path)
-            log(logger.info, 'Token removed for file', f'{filename=}', f'{auth_id=}', f'{user_ip=}')
+            log(logger.info, 'Download token for file removed', f'{filename=}', f'{token=}', f'{auth_id=}', f'{user_ip=}')
         except FileNotFoundError:
-            pass
+            log(logger.error, 'Tried to remove non existing download token for file', f'{token=}', f'{auth_id=}', f'{user_ip=}')
 
     return redirect(url_for('index_request'))
 
