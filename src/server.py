@@ -142,10 +142,9 @@ def download_file_token_request(filename, token):
     user_ip = "->".join(request.access_route)
     file_token_path = os.path.join(LINKS_DIR, filename)
     if not is_file_token_valid(file_token_path, token):
-        log(logger.warning, 'Unauthorized download try', f'{user_ip=}')
+        log(logger.warning, 'Unauthorized download try', f'{filename=}', f'{token=}', f'{user_ip=}')
         return redirect(url_for('index_request'))
 
-    os.remove(file_token_path)
     log(logger.info, 'File downloaded', f'{filename=}', f'{token=}', f'{user_ip=}')
     return send_from_directory(CONTENT_DIR, filename)
 
