@@ -1,6 +1,5 @@
 src/__pycache__
 src/env
 src/storage
-http_server_secrets.yaml
-http_server_secrets_setup.sh
+file_server_secrets.yaml
 version
