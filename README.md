@@ -1,5 +1,21 @@
 # HTTP File hosting
 
+This project contains code of file server  which brings the posibility to upload and share files between users. At this time there is place for only one user account predefined in k8s secrets file. User can manage uploaded files, generate links for them (thus making certain files publickly accessed) or generate     one time access token for a guest user. A guest user can list , download and manage only the files that have been marked as public by admin. Files uploaded by guest user are automatically marked as public.
+
+Here are some screenshots of how this apps work:
+
+![plot](./images/login_page_ss.png)
+Figure 1.: Login page of files app.
+
+![plot](./images/available_files_page_ss.png)
+Figure 2.: Logged in user gets this page. They can activate or deactivate links for certain files,  upload new ones and generate temporary access tokens.
+
+![plot](./images/active_token_ss.png)
+Figure 3.: Here the same page, but with active token.
+
+![plot](./images/token_files_page_ss.png)
+Figure 4.: Page seen by guest user (logged in by token). They can see only files with public access (links can be copied, opened, shared etc.). Any uploaded file will automatically get it's active link.
+
 ## How to run
 
 1. Clone repository
