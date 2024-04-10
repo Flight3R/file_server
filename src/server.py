@@ -44,7 +44,7 @@ def serve_index(**kwargs):
 @app.route('/favicon.ico')
 def favicon_request():
     return send_from_directory(os.path.join(app.root_path, 'static'),
-                               'favicon.ico',mimetype='image/vnd.microsoft.icon')
+                               'favicon.ico',mimetype='image/x-icon')
 
 
 @app.route('/')
