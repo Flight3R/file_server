@@ -1,0 +1,4 @@
+/persistent_volumes/file_server/storage:
+content
+links
+token
