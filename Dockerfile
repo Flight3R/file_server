@@ -1,7 +1,7 @@
 FROM python:3.8-slim
 
-WORKDIR /file_server
-COPY src /file_server
+WORKDIR /server
+COPY src /server
 
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
