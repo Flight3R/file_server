@@ -2,10 +2,11 @@ from flask import Flask, render_template, request, redirect, url_for, send_from_
 import logging
 from datetime import timedelta
 import random
-import sys
 import os
-from logger import log, logger
-from credentials import load_secret, generate_download_token_file, get_filename_from_download_token_file, is_download_token_generated_for_file, get_generated_token, get_tokens_for_files_dict, save_token_to_file, is_directory_empty, is_file_present
+import sys
+sys.path.append('apptools/src')
+from apptools.src.logger import log, logger
+from apptools.src.secrets import load_secret, generate_download_token_file, get_filename_from_download_token_file, is_download_token_generated_for_file, get_generated_token, get_tokens_for_files_dict, save_token_to_file, is_directory_empty, is_file_present
 
 
 if __name__ == '__main__':
@@ -19,10 +20,18 @@ app.secret_key = load_secret('APP_KEY')
 
 USERNAME = load_secret('USERNAME')
 PASSWORD = load_secret('PASSWORD')
+
+STORAGE_DIR = 'storage'
 CONTENT_DIR = 'storage/content'
 LINKS_DIR = 'storage/links'
 STATIC_DIR = 'static'
 TOKEN_DIR = 'storage/token'
+os.makedirs(STORAGE_DIR, exist_ok=True)
+os.makedirs(CONTENT_DIR, exist_ok=True)
+os.makedirs(LINKS_DIR, exist_ok=True)
+os.makedirs(STATIC_DIR, exist_ok=True)
+os.makedirs(TOKEN_DIR, exist_ok=True)
+
 
 log(logger.info, 'Server started')
 

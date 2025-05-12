@@ -1,5 +1,6 @@
 src/__pycache__
 src/env
 src/storage
+src/apptools
 file_server_secrets.yaml
 version
