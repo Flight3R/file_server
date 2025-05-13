@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: file-server-deployment
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: file-server
@@ -32,7 +32,7 @@ spec:
                   name: file-server-secret
                   key: PASSWORD
           volumeMounts:
-            - mountPath: /file_server/storage
+            - mountPath: /server/storage
               name: file-server-pv-storage
       volumes:
         - name: file-server-pv-storage

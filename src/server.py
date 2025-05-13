@@ -21,12 +21,10 @@ app.secret_key = load_secret('APP_KEY')
 USERNAME = load_secret('USERNAME')
 PASSWORD = load_secret('PASSWORD')
 
-STORAGE_DIR = 'storage'
 CONTENT_DIR = 'storage/content'
 LINKS_DIR = 'storage/links'
 STATIC_DIR = 'static'
 TOKEN_DIR = 'storage/token'
-os.makedirs(STORAGE_DIR, exist_ok=True)
 os.makedirs(CONTENT_DIR, exist_ok=True)
 os.makedirs(LINKS_DIR, exist_ok=True)
 os.makedirs(STATIC_DIR, exist_ok=True)
