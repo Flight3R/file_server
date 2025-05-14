@@ -1,1 +1,0 @@
-/repositories/apptools/increment_version.sh
