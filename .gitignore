@@ -3,5 +3,6 @@ src/env
 src/storage
 src/apptools
 docker-build-src
+increment_version.sh
 secrets.yaml
 version
