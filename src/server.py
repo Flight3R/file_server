@@ -48,12 +48,6 @@ def serve_index(**kwargs):
     return render_template('index.html', files=file_list, token=generate_token, tokens_for_files=download_tokens_for_files_dict, **kwargs)
 
 
-@app.route('/favicon.ico')
-def favicon_request():
-    return send_from_directory(os.path.join(app.root_path, 'static'),
-                               'favicon.ico',mimetype='image/x-icon')
-
-
 @app.route('/')
 def index_request():
     log(logger.debug, sys._getframe().f_code.co_name)
