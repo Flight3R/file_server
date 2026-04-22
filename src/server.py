@@ -5,15 +5,8 @@ import random
 import os
 import sys
 
-APPTOOLS_ROOT = os.environ.get('APPTOOLS_ROOT', '/repositories')
-APPTOOLS_SRC = os.path.join(APPTOOLS_ROOT, 'apptools', 'src')
-for path in (APPTOOLS_ROOT, APPTOOLS_SRC):
-    if path not in sys.path:
-        sys.path.append(path)
-
-from apptools.src.logger import log, logger
-from apptools.src.secrets import load_secret, generate_download_token_file, get_filename_from_download_token_file, is_download_token_generated_for_file, get_generated_token, get_tokens_for_files_dict, save_token_to_file, is_directory_empty, is_file_present
-
+from apptools.logger import *
+from apptools.secrets import *
 
 if __name__ == '__main__':
     logger.setLevel(logging.DEBUG)

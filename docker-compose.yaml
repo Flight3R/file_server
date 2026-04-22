@@ -1,16 +1,13 @@
 services:
-  file-server:
+  file_server:
     build:
       context: .
-      dockerfile: Dockerfile
     image: file_server:local
     container_name: file_server
-    working_dir: /server
     env_file:
       - .env
     ports:
       - "30006:8000"
     volumes:
-      - /repositories/apptools:/repositories/apptools:z
       - /persistent_volumes/file_server/storage:/server/storage:Z
     restart: unless-stopped

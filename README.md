@@ -23,16 +23,19 @@ Figure 4.: Page seen by guest user (logged in by token). They can see only files
 
    `mkdir -p /persistent_volumes/file_server/storage`
 
-3. Review and adjust [.env](/repositories/file_server/.env).
-4. Start the server:
+3. Ensure the `src/apptools` symlink points at the sibling `apptools` repository:
+
+   `ln -s /repositories/apptools /repositories/file_server/src/apptools`
+
+4. Review and adjust [.env](/repositories/file_server/.env).
+5. Start the server:
 
    `docker compose up -d --build`
 
 The app will be available on port `30006`.
 
-The application code is now built into the container image. Only the existing runtime paths remain mounted:
+The application code is built into the container image. `apptools/src` is pulled in during build through the `src/apptools` symlink, so inside the container the relevant paths are `./server.py` and `./apptools/src/...`. No `apptools` runtime mount is used. The only runtime path that remains mounted is:
 
-- `/repositories/apptools` -> `/repositories/apptools`
 - `/persistent_volumes/file_server/storage` -> `/server/storage`
 
 ## How to use
