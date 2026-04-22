@@ -1,17 +1,16 @@
 services:
   file-server:
-    image: python:3.12
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: file_server:local
     container_name: file_server
     working_dir: /server
-    command: >
-      sh -c "pip install --no-cache-dir -r requirements.txt &&
-      gunicorn -w 2 -b 0.0.0.0:8000 wsgi:app"
     env_file:
       - .env
     ports:
       - "30006:8000"
     volumes:
-      - ./src:/server:Z
       - /repositories/apptools:/repositories/apptools:z
       - /persistent_volumes/file_server/storage:/server/storage:Z
     restart: unless-stopped

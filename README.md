@@ -26,9 +26,14 @@ Figure 4.: Page seen by guest user (logged in by token). They can see only files
 3. Review and adjust [.env](/repositories/file_server/.env).
 4. Start the server:
 
-   `docker compose up -d`
+   `docker compose up -d --build`
 
 The app will be available on port `30006`.
+
+The application code is now built into the container image. Only the existing runtime paths remain mounted:
+
+- `/repositories/apptools` -> `/repositories/apptools`
+- `/persistent_volumes/file_server/storage` -> `/server/storage`
 
 ## How to use
 

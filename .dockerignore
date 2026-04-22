@@ -1,0 +1,7 @@
+.env
+.git
+.gitignore
+images/
+dot_env
+src/__pycache__/
+src/*.pyc
