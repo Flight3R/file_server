@@ -23,9 +23,9 @@ Figure 4.: Page seen by guest user (logged in by token). They can see only files
 
    `mkdir -p /persistent_volumes/file_server/storage`
 
-3. Ensure the `src/apptools` symlink points at the sibling `apptools` repository:
+3. Copy apptools to src directory:
 
-   `ln -s /repositories/apptools /repositories/file_server/src/apptools`
+   `cp -r /repositories/apptools/apptools src`
 
 4. Review and adjust [.env](/repositories/file_server/.env).
 5. Start the server:
