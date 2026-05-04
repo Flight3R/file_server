@@ -1,5 +1,5 @@
 src/__pycache__
-src/.env
+src/venv
 src/storage
 src/apptools
 .env
