@@ -4,8 +4,10 @@ services:
       context: .
     image: file_server:local
     container_name: file_server
-    env_file:
-      - .env
+    environment:
+      APP_KEY: ${APP_KEY}
+      USERNAM: ${USERNAME}
+      PASSWORD: ${PASSWORD}
     ports:
       - "30006:8000"
     volumes:
