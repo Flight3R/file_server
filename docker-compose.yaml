@@ -6,7 +6,7 @@ services:
     container_name: file_server
     environment:
       APP_KEY: ${APP_KEY}
-      USERNAM: ${USERNAME}
+      USERNAME: ${USERNAME}
       PASSWORD: ${PASSWORD}
     ports:
       - "30006:8000"
