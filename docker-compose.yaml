@@ -11,5 +11,5 @@ services:
     ports:
       - "30006:8000"
     volumes:
-      - /persistent_volumes/file_server/storage:/server/storage:Z
+      - /mnt/persistent_volumes/file_server/storage:/server/storage:Z
     restart: unless-stopped

@@ -1,1 +1,1 @@
-cp -r /repositories/apptools/apptools src
+cp -r ~/repos/apptools/apptools src

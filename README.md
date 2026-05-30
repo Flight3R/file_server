@@ -21,7 +21,7 @@ Figure 4.: Page seen by guest user (logged in by token). They can see only files
 1. Clone repository.
 2. Create persistent volume directory:
 
-   `mkdir -p /persistent_volumes/file_server/storage`
+   `mkdir -p /mnt/persistent_volumes/file_server/storage`
 
 3. Copy apptools to src directory:
 
@@ -36,7 +36,7 @@ The app will be available on port `30006`.
 
 The application code is built into the container image. `apptools/src` is pulled in during build through the `src/apptools` symlink, so inside the container the relevant paths are `./server.py` and `./apptools/src/...`. No `apptools` runtime mount is used. The only runtime path that remains mounted is:
 
-- `/persistent_volumes/file_server/storage` -> `/server/storage`
+- `/mnt/persistent_volumes/file_server/storage` -> `/server/storage`
 
 ## How to use
 
